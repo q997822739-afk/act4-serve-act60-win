@@ -1,0 +1,23 @@
+LIBRARY dinput8
+EXPORTS
+    DirectInput8Create=act4qol.DirectInput8Create
+    DirectInput8Create@20=act4qol.DirectInput8Create@20
+    act4_font_init=act4qol.act4_font_init
+    qol_cat_copy=act4qol.qol_cat_copy
+    qol_cat_ready=act4qol.qol_cat_ready
+    qol_cat_send=act4qol.qol_cat_send
+    qol_cat_version=act4qol.qol_cat_version
+    qol_render_connected=act4qol.qol_render_connected
+    qol_ui_action=act4qol.qol_ui_action
+    qol_ui_get=act4qol.qol_ui_get
+    qol_ui_grade_name=act4qol.qol_ui_grade_name
+    qol_ui_hwnd=act4qol.qol_ui_hwnd
+    qol_ui_log=act4qol.qol_ui_log
+    qol_ui_set=act4qol.qol_ui_set
+    qol_ui_set_turbo=act4qol.qol_ui_set_turbo
+    qol_ui_set_visible=act4qol.qol_ui_set_visible
+    qol_ui_turbo=act4qol.qol_ui_turbo
+    qol_ui_visible=act4qol.qol_ui_visible
+    ttf_cell=act4qol.ttf_cell
+    ttf_glyph=act4qol.ttf_glyph
+    ttf_ready=act4qol.ttf_ready

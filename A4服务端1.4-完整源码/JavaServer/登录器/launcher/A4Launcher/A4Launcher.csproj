@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 底座来自 A12Launcher（2026-10-09 版），只保留登录相关的部分。
+       目标框架定 .NET Framework 4.7.2：玩家从 Win7 SP1 到 Win11 都能直接跑，不用装运行库
+       （Win10 1809 自带 4.7.2、1903+ 自带 4.8、Win11 自带 4.8.1；Win7 只要装过 4.7.2 以上）。
+       .NET 8/10 已经不支持 Win7，自包含单文件要 60 MB，所以不选。
+       没有 NuGet 依赖 => 输出就是一个 exe，不用合并。 -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>A4Launcher</AssemblyName>
+    <RootNamespace>A4Launcher</RootNamespace>
+    <!-- 必须 32 位：启动游戏后要往 32 位的 DNF.exe 里注入 a4popuppatch.dll，
+         CreateRemoteThread 用的 kernel32!LoadLibraryW 地址只有在同位数时才能直接复用。
+         纯托管的 WPF 程序，x86 在 64 位 Windows 上照常运行。 -->
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+    <DebugType>none</DebugType>
+    <!-- 图标是原版 DNFLauncher.exe 里自带的（RT_GROUP_ICON 1，48/32/16 三档），
+         2026-11-02 晚用 icon_extract 从资源段原样抠出来存成 appicon.ico，不再自己画 -->
+    <ApplicationIcon>appicon.ico</ApplicationIcon>
+    <EnableDefaultApplicationDefinition>true</EnableDefaultApplicationDefinition>
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+
+  <!-- 从 Zero 的 DNFLauncher 运行时内存里拆出来的素材（640×497 背景、三态按钮、导航条） -->
+  <ItemGroup>
+    <Resource Include="Assets\*.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="appicon.ico" />
+  </ItemGroup>
+
+  <!-- DPAPI（ProtectedData / DataProtectionScope）：.NET Framework 里在 System.Security.dll，
+       不在 mscorlib，不加引用会 CS0103。 -->
+  <ItemGroup>
+    <Reference Include="System.Security" />
+  </ItemGroup>
+
+</Project>

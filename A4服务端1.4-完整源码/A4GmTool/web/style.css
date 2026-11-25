@@ -1,0 +1,671 @@
+/* A4 控制台配色：深色平面、细边框，金色仅突出主要操作和选中态。 */
+:root {
+  color-scheme: dark;
+  --c-base-0: #11151E;
+  --c-base-1: #151821;
+  --c-base-2: #181C26;
+  --c-base-3: #1C212D;
+  --c-base-4: #222835;
+  --c-base-5: #293141;
+  --c-line: #2C3446;
+  --c-line-soft: #272E3D;
+  --c-text-1: #F0F3FA;
+  --c-text-2: #B8C2D5;
+  --c-text-3: #9AA5BC;
+  --c-accent: #F7B500;
+  --c-focus: var(--c-accent);
+  --c-gold-hover: #FFC629;
+  --c-on-gold: #191500;
+  --c-danger: #EF4444;
+  --c-danger-hi: #FF9090;
+  --c-warn: #F4C76E;
+  --c-info: #91BCFF;
+  --c-ok: #4ADE80;
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 20px; --sp-6: 24px;
+  --r-1: 6px; --r-2: 6px;
+  --dur: 180ms;
+
+  --bg: var(--c-base-1);
+  --bg-2: var(--c-base-2);
+  --panel: var(--c-base-3);
+  --panel-2: var(--c-base-4);
+  --line: var(--c-line);
+  --line-soft: var(--c-line-soft);
+  --text: var(--c-text-1);
+  --muted: var(--c-text-3);
+  --accent: var(--c-accent);
+  --accent-soft: rgba(247, 181, 0, .10);
+  --info: var(--c-info);
+  --ok: var(--c-ok);
+  --warn: var(--c-warn);
+  --danger: var(--c-danger);
+  --danger-soft: rgba(232, 85, 95, .18);
+  --focus: var(--c-focus);
+  --radius: var(--r-1);
+  --mono: "Cascadia Mono", Consolas, "Microsoft YaHei UI", monospace;
+  --sans: "Microsoft YaHei UI", "Segoe UI", system-ui, sans-serif;
+
+  /* 品质色沿用游戏惯例 */
+  --rarity-0: #cfd8e3;
+  --rarity-1: #7fb2e5;
+  --rarity-2: #b98ae0;
+  --rarity-3: #e18ab0;
+  --rarity-4: #e0a44a;
+  --rarity-5: #6fc7c0;
+  --rarity-6: #e0794a;
+}
+
+* { box-sizing: border-box; }
+
+/* hidden 属性必须真的藏住：`.inline-field` 之类写了 display:inline-flex，会盖过 UA 的
+   [hidden]{display:none} —— 发放页与背包页按条件隐藏的筛选下拉（职业/部位/材质）会一直露着。 */
+[hidden] { display: none !important; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font: 13px/1.5 var(--sans);
+}
+
+body { display: flex; flex-direction: column; }
+
+.muted { color: var(--muted); font-weight: 400; font-size: 12px; }
+code {
+  font-family: var(--mono); font-size: 12px; background: var(--c-base-0);
+  border: 1px solid var(--line-soft); border-radius: var(--r-1); padding: 0 4px;
+}
+.icon { width: 16px; height: 16px; flex: 0 0 16px; stroke: currentColor; fill: none;
+  stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.icon.sm { width: 14px; height: 14px; flex-basis: 14px; }
+.icon.lg { width: 20px; height: 20px; flex-basis: 20px; }
+
+/* 键盘导航必须有可见焦点 */
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-1); }
+
+/* ---------- 顶栏 ---------- */
+.topbar {
+  display: flex; align-items: center; gap: var(--sp-4);
+  padding: 8px var(--sp-4);
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  flex: 0 0 auto;
+}
+.brand { flex: 0 0 auto; }
+.brand-title { margin: 0; font-weight: 600; font-size: 15px; }
+.pills { display: flex; flex-wrap: wrap; gap: 6px 14px; flex: 1 1 auto; }
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--muted); white-space: nowrap;
+}
+.pill b { font-weight: 600; color: var(--text); }
+.pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
+.pill.ok .dot { background: var(--ok); }
+.pill.warn .dot { background: var(--warn); }
+.pill.bad .dot { background: var(--danger); }
+.pill.busy .dot { background: var(--info); }
+.topbar-right { display: flex; align-items: center; gap: var(--sp-2); flex: 0 0 auto; }
+.char-picker { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); white-space: nowrap; }
+.char-picker select { min-width: 190px; }
+@media (max-width: 960px) {
+  .topbar, .topbar-right { flex-wrap: wrap; }
+  .topbar-right { flex: 0 1 auto; }
+  .pills { order: 1; flex-basis: 100%; }
+}
+@media (max-width: 680px) {
+  .shell { flex-direction: column; }
+  .shell > .nav { flex: 0 0 auto; flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+  .shell > .nav .nav-group { display: none; }
+  .shell > .nav .nav-item { flex: 0 0 auto; }
+  .char-picker select { min-width: 120px; max-width: 200px; }
+}
+
+/* ---------- 外框布局 ---------- */
+.shell { flex: 1 1 auto; display: flex; min-height: 0; }
+.nav {
+  flex: 0 0 184px; padding: var(--sp-2) 6px var(--sp-3);
+  display: flex; flex-direction: column; gap: 1px;
+  background: var(--bg-2); border-right: 1px solid var(--line); overflow: auto;
+}
+.nav-group {
+  margin: var(--sp-3) 10px var(--sp-1); font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted); user-select: none;
+}
+.nav-group:first-child { margin-top: var(--sp-1); }
+.nav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px; border: 0; border-left: 2px solid transparent; border-radius: var(--r-1);
+  background: transparent; color: var(--c-text-2); font: inherit; text-align: left;
+  cursor: pointer;
+}
+.nav-item:hover { background: var(--panel-2); color: var(--text); }
+.nav-item.active { border-left-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+
+.content { flex: 1 1 auto; display: flex; flex-direction: column; overflow: auto; padding: var(--sp-4) var(--sp-5) var(--sp-6); min-width: 0; }
+
+.page { display: none; }
+.page.active { display: block; }
+.page h2 {
+  margin: 0 0 var(--sp-3); font-size: 16px; font-weight: 700; letter-spacing: .01em;
+  padding-bottom: var(--sp-2); border-bottom: 1px solid var(--line-soft);
+}
+
+/* 发放物品页：整页不滚动（只有列表与详情段落内部滚动） */
+.page[data-page="give"].active {
+  display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; overflow: hidden;
+}
+/* 标题收成一行小字（导航已表明页面，这里只为结构与可读性留名，省下的高度全给发放侧栏） */
+.page[data-page="give"] h2 {
+  flex: 0 0 auto; margin: 0 0 6px; padding: 0; border: 0;
+  font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: .04em;
+}
+
+.panel {
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+  margin-bottom: var(--sp-3); overflow: hidden;
+}
+.panel-head {
+  padding: 8px var(--sp-3); background: var(--panel-2); border-bottom: 1px solid var(--line);
+  font-weight: 600; font-size: 12.5px; display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap;
+}
+.panel-head .icon { color: var(--muted); }
+.panel-body { padding: var(--sp-3); }
+.grid-2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-3); }
+@media (max-width: 1180px) { .grid-2 { grid-template-columns: minmax(0, 1fr); } }
+.prose p { margin: 0 0 var(--sp-2); }
+.prose p:last-child { margin-bottom: 0; }
+
+/* ---------- 控件 ---------- */
+input[type=text], input[type=number], input[type=search], select, textarea {
+  background: var(--c-base-0); color: var(--text); border: 1px solid var(--line);
+  border-radius: var(--r-1); padding: 6px 9px; font: inherit;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+input[type=number] { width: 110px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--panel-2); color: var(--text); border: 1px solid var(--line);
+  border-radius: var(--r-1); padding: 6px 12px; font: inherit; cursor: pointer; white-space: nowrap;
+  transition: background var(--dur), border-color var(--dur), color var(--dur);
+}
+.btn:hover { background: var(--c-base-5); border-color: #3E4C68; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--c-on-gold); font-weight: 600; }
+.btn-primary:hover { background: var(--c-gold-hover); border-color: var(--c-gold-hover); }
+.btn-danger { background: var(--danger-soft); border-color: rgba(232, 85, 95, .55); color: var(--c-danger-hi); }
+.btn-danger:hover { background: rgba(232, 85, 95, .26); border-color: var(--c-danger); }
+.btn-ghost { background: transparent; }
+.btn-ghost:hover { background: var(--panel-2); }
+/* 「已小退」开关（顶栏）：只有服务端在跑时才可用；打开 = 允许在服务端运行时写库。
+   打开态用强调色描边 + 淡底，一眼能看出"现在写库是放行的、记得改完关掉"。 */
+#shutToggle.active { background: rgba(174, 198, 255, .16); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+#shutToggle.active:hover { background: rgba(174, 198, 255, .24); }
+.toolbar { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
+.toolbar > input[type=search], .toolbar > input[type=text] { flex: 1 1 220px; min-width: 150px; }
+.toolbar .inline-field { white-space: nowrap; }
+.toolbar .inline-field input { flex: 0 0 auto; }
+.toolbar .inline-field input[type=number] { width: 88px; }
+.inline-field { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.check { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); white-space: nowrap; cursor: pointer; }
+.check input { accent-color: var(--accent); }
+/* 快速定位（五轮）：等级区间窄输入框，藏掉步进箭头（键盘输入为主） */
+.lv-input { width: 58px; text-align: center; -moz-appearance: textfield; appearance: textfield; }
+.lv-input::-webkit-outer-spin-button, .lv-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+/* 数量 / 耐久 / 强化 / 倍率这些窄输入框同样藏掉步进箭头：它们挤在 1-2 行的表单里，
+   箭头会占掉宽度还会让列宽抖动（键盘 + 上下键一样能调）。 */
+.give-fields input[type=number], .set-give input[type=number], #expRateInput {
+  -moz-appearance: textfield; appearance: textfield;
+}
+.give-fields input[type=number]::-webkit-outer-spin-button, .give-fields input[type=number]::-webkit-inner-spin-button,
+.set-give input[type=number]::-webkit-outer-spin-button, .set-give input[type=number]::-webkit-inner-spin-button,
+#expRateInput::-webkit-outer-spin-button, #expRateInput::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+/* 品质下拉按游戏稀有度配色（Windows 桌面 Chrome/Edge 生效） */
+#itemRarity { min-width: 96px; }
+#itemRarity option[value="0"] { color: var(--rarity-0); }
+#itemRarity option[value="1"] { color: var(--rarity-1); }
+#itemRarity option[value="2"] { color: var(--rarity-2); }
+#itemRarity option[value="3"] { color: var(--rarity-3); }
+#itemRarity option[value="4"] { color: var(--rarity-4); }
+#itemRarity option[value="5"] { color: var(--rarity-5); }
+.row-actions { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+/* 背包页的检索/分类条（2026-09-22）：一行放检索框 + 分类/部位/子类/品质四个下拉 + 清除 */
+.inv-filters > input[type=search] { flex: 1 1 260px; min-width: 180px; }
+.inv-filters .inline-field select { max-width: 190px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip {
+  background: var(--panel-2); border: 1px solid var(--line); color: var(--text);
+  border-radius: 999px; padding: 3px 11px; font: inherit; font-size: 12px; cursor: pointer;
+  transition: border-color var(--dur), color var(--dur), background var(--dur);
+}
+.chip:hover { border-color: var(--accent); color: var(--accent); }
+.chip.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.chip .n { color: var(--muted); margin-left: 5px; font-size: 11px; }
+.chip.active .n { color: var(--accent); }
+
+.form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--sp-2) var(--sp-3); }
+.form-grid label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
+.form-grid label input, .form-grid label select { width: 100%; }
+.form-grid label.wide { grid-column: 1 / -1; }
+.form-grid .hint { font-size: 11px; color: var(--muted); }
+.form-grid .hint.bad { color: var(--c-danger-hi); }
+.form-grid .hint.ok { color: var(--ok); }
+
+/* ---------- 表格 ---------- */
+.table-wrap { overflow: auto; max-height: 62vh; border: 1px solid var(--line-soft); border-radius: var(--r-2); }
+/* 数据表用固定列宽布局（见 app.js table(opts.fixed)）：列宽按 th 的 width 生效，
+   没写宽度的列平分剩余空间。这样切分类时各列 x 完全不动，ID 与图标的间距恒定。 */
+table.fixed { table-layout: fixed; }
+table.fixed td, table.fixed th { overflow: hidden; text-overflow: ellipsis; }
+.table-wrap.short { max-height: 260px; }
+table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+thead th {
+  position: sticky; top: 0; z-index: 2;
+  background: var(--c-base-4); text-align: left; font-weight: 600; padding: 7px 9px;
+  border-bottom: 1px solid var(--line); white-space: nowrap;
+}
+tbody td { padding: 5px 9px; border-bottom: 1px solid var(--line-soft); vertical-align: middle; line-height: 1.45; }
+tbody tr:hover { background: var(--panel-2); }
+tbody tr.selected { background: var(--accent-soft); }
+tbody tr.clickable { cursor: pointer; }
+tbody tr.dim td { color: var(--muted); }
+td.num, th.num { text-align: right; font-family: var(--mono); }
+/* ID 列当"数字列"处理（2026-09-22）：固定宽度 + 右对齐 + 等宽数字。
+   表格默认按内容自动排版，短 ID 的分类页（如"全部"里的 0/1/2）ID 列会缩窄，
+   图标列随之前后跳，切选项卡时"ID 与图标的间距"忽大忽小 —— 钉住宽度与对齐后，
+   各分类的图标列 x 完全一致（名字列吸收剩余宽度）。 */
+td.id, th.id {
+  width: 84px; text-align: right; font-family: var(--mono); color: var(--muted);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.empty { padding: var(--sp-5); text-align: center; color: var(--muted); }
+
+.icon-cell { display: flex; align-items: center; gap: var(--sp-2); min-width: 0; }
+.icon-box {
+  width: 26px; height: 26px; flex: 0 0 26px; border-radius: var(--r-1);
+  background: var(--c-base-0); border: 1px solid var(--line-soft);
+  display: grid; place-items: center; overflow: hidden;
+}
+.icon-box img { width: 24px; height: 24px; image-rendering: pixelated; display: block; }
+.icon-box.lg { width: 56px; height: 56px; flex-basis: 56px; border-radius: var(--r-2); }
+.icon-box.lg img { width: 52px; height: 52px; }
+.icon-box.empty-icon::after { content: "?"; color: var(--muted); font-size: 12px; }
+.name-cell { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tag {
+  display: inline-block; padding: 0 6px; border-radius: var(--r-1); font-size: 11px;
+  background: var(--panel-2); color: var(--muted); border: 1px solid var(--line);
+}
+.tag.warn { background: var(--danger-soft); border-color: rgba(232, 85, 95, .55); color: var(--c-danger-hi); }
+.tag.ok { background: rgba(89, 217, 245, .12); border-color: rgba(89, 217, 245, .38); color: var(--ok); }
+.tag.info { background: rgba(127, 212, 242, .12); border-color: rgba(127, 212, 242, .38); color: var(--info); }
+/* 任务页的"需要材料"单元格：一行一件，缺料标红；行内小按钮（发材料）跟在材料下面。
+   · 名称长了就换行（表格是 table-layout:fixed，列宽钉在 th 上，nowrap 会被 ellipsis 截掉）；
+   · .material-action 的 min-height = 行内按钮的高度（23px，实测）：**没有缺口时也留着这一行**，
+     否则发完材料按钮一消失，行高少 28px、整张任务表的框跟着跳一下
+     （2026-09-22 用户报「发放材料之后，框框大小就不一样了」）。 */
+.material-line { white-space: normal; }
+.material-line .muted { margin-left: 2px; }
+.material-line .tag { margin-left: 4px; }
+.material-action { margin-top: 5px; min-height: 23px; }
+/* 行内【发材料】：按钮虽小，但要有"能点"的样子（2026-09-22 用户反馈：不明显） */
+.material-action .btn-tiny { padding: 2px 12px; font-size: 12px; }
+.btn-tiny { padding: 1px 7px; font-size: 11.5px; }
+/* 角色页的「一键紫装」预览：九格用套装块那套网格，宽度自适应 */
+#loadoutPanel .set-members { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+#loadoutPanel .set-member { padding: 2px 6px; }
+#loadoutPanel .give-head .icon-box.lg { width: 30px; height: 30px; flex-basis: 30px; }
+
+.pager { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.pager button {
+  background: var(--panel-2); border: 1px solid var(--line); color: var(--text);
+  border-radius: var(--r-1); padding: 3px 10px; cursor: pointer; font: inherit;
+  transition: background var(--dur), border-color var(--dur);
+}
+.pager button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.pager button:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ---------- 发放物品页（2026-09-22 重构：不滚动、全功能可见） ---------- */
+.give-toolbar {
+  flex: 0 0 auto; display: flex; align-items: flex-start; gap: var(--sp-2); flex-wrap: wrap;
+  padding: 6px 10px; margin-bottom: var(--sp-2);
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+}
+.give-toolbar .toolbar { flex: 1 1 520px; }
+.give-toolbar .inline-field select { max-width: 210px; }
+.give-toolbar #catalogMeta { margin-top: 6px; }
+.give-split {
+  flex: 1 1 auto; min-height: 0;
+  display: grid; grid-template-columns: minmax(0, 1fr) 396px; gap: var(--sp-3);
+}
+.give-list { display: flex; flex-direction: column; min-height: 0; margin: 0; --rail-w: 168px; }
+/* 分类栏在左、表格与翻页在右（2026-09-22 用户反馈：分类横铺顶部又换行、还占列表高度）。
+   整页不滚动的约束不变 —— 左栏与表格各自内部滚动，翻页条固定在面板底部。 */
+.give-list .panel-body {
+  display: grid; grid-template-columns: var(--rail-w) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto; gap: 6px 10px; min-height: 0; padding: 6px 10px 10px;
+}
+.cat-rail {
+  grid-area: 1 / 1 / 3 / 2; display: flex; flex-direction: column; gap: 1px;
+  overflow-y: auto; padding-right: 6px; border-right: 1px solid var(--line-soft);
+}
+.cat-item {
+  display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
+  padding: 6px 8px; border: 0; border-left: 2px solid transparent; border-radius: var(--r-1);
+  background: transparent; color: var(--c-text-2); font: inherit; cursor: pointer;
+  transition: background var(--dur), color var(--dur), border-color var(--dur);
+}
+.cat-item:hover { background: var(--panel-2); color: var(--text); }
+.cat-item.active { background: var(--accent-soft); border-left-color: var(--accent); color: var(--accent); font-weight: 600; }
+/* 计数右对齐 + 等宽数字：纵排时右侧数字列对齐成一条线，扫一眼就能比大小 */
+.cat-item .n { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.cat-item.active .n { color: var(--accent); }
+.cat-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* 部位子层：缩进 + 左侧竖线，一眼看出它从属于上面的分类 */
+.cat-sub { display: flex; flex-direction: column; gap: 1px; margin: 2px 0 6px 9px; padding-left: 5px; border-left: 1px solid var(--line); }
+.cat-item.sub { padding: 4px 8px; font-size: 12px; }
+.give-list .table-wrap { grid-area: 1 / 2 / 2 / 3; min-height: 120px; max-height: none; }
+.give-list .pager { grid-area: 2 / 2 / 3 / 3; }
+/* 空结果时把提示居中摆在大片留白里（:has 不支持也只是退回原样，不影响可用性） */
+.give-list .table-wrap:has(> .empty) { display: grid; place-items: center; }
+/* 分类栏排布方式的分界：够宽才竖着放左边（分类栏就是这页的"侧边栏"）。
+   60US 原版这条分界是 1500px，因为它表格里的固定列更多（多了"状态"列，共 468px），
+   1242px 窗口下名称列会被挤到只剩 16px。S1A5 少了那一列（固定列约 404px），
+   所以分界降到 1200px —— 1400/1440 这种常见窗口也能看到竖栏，不牺牲名称列。
+   窄于此就退回顶部横向换行条（同一份 DOM，只换 flex 方向）。 */
+@media (max-width: 1200px) {
+  .give-list .panel-body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; }
+  .cat-rail {
+    grid-area: 1 / 1 / 2 / 2; flex-direction: row; flex-wrap: wrap; gap: 4px;
+    max-height: 152px; padding: 0 0 6px; border-right: 0; border-bottom: 1px solid var(--line-soft);
+  }
+  .cat-item { width: auto; border-left: 0; }
+  .cat-item .n { margin-left: 5px; }
+  .cat-sub { flex-direction: row; flex-wrap: wrap; width: 100%; margin: 0; padding-left: 0; border-left: 0; }
+  .cat-item.sub { font-size: 11.5px; }
+  .give-list .table-wrap { grid-area: 2 / 1 / 3 / 2; }
+  .give-list .pager { grid-area: 3 / 1 / 4 / 2; }
+}
+/* 窄一档：发放设置收 340、分类栏收 140 —— 1366 笔记本上名称列还剩 ~150px，
+   不然左侧栏会把名称列挤成三五个字（实测 1366 下名称列只剩 76px）。 */
+@media (max-width: 1560px) {
+  .give-split { grid-template-columns: minmax(0, 1fr) 340px; }
+  .give-list { --rail-w: 140px; }
+}
+@media (max-width: 1180px) {
+  /* 两栏挤不下了（发放设置 340 + 分类栏 + 表格）→ 回退成"整页滚动 + 面板堆叠"，
+     分类栏这时独占整页宽度，反而比硬挤在两栏里宽（单机工具主用 1366+，这里只保证不破版） */
+  .page[data-page="give"].active { overflow: auto; }
+  .give-split { grid-template-columns: minmax(0, 1fr); flex: 0 0 auto; }
+  .give-list { height: 56vh; } .give-side { height: auto; }
+}
+.give-side { display: flex; flex-direction: column; min-height: 0; margin: 0; }
+.give-side .panel-body {
+  display: flex; flex-direction: column; gap: 6px; min-height: 0;
+  /* 侧栏按"整块可见"设计：常规套装（≤11 件）全部装得下，不出现滚动条。
+     这里的 overflow-y 只是极端内容（超长套装属性 + 满级装备词条）的兜底，不让任何东西被裁掉。 */
+  overflow-y: auto;
+  padding: var(--sp-2) 10px 10px;
+}
+/* 物品详情段落是唯一常态可滚的地方（介绍/属性可能很长），套装块与发放按钮永远在视口内 */
+.give-scroll { flex: 1 1 auto; min-height: 60px; overflow-y: auto; padding-right: 2px; }
+.give-head { display: flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+.give-head .icon-box.lg { width: 34px; height: 34px; flex-basis: 34px; border-radius: var(--r-1); }
+.give-head .icon-box.lg img { width: 32px; height: 32px; }
+.give-head-text { min-width: 0; }
+.give-title { font-weight: 600; font-size: 13.5px; word-break: break-all; }
+.give-sub { color: var(--muted); font-size: 11.5px; }
+.give-fields { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; flex: 0 0 auto; }
+.give-fields label { display: flex; flex-direction: column; gap: 2px; font-size: 11px; color: var(--muted); }
+.give-fields label input, .give-fields label select { width: 100%; padding: 4px 6px; font-size: 12px; }
+.give-fields label.wide { grid-column: 1 / -1; }
+.give-side .row-actions { flex: 0 0 auto; }
+.give-side .row-actions .btn { flex: 1 1 auto; justify-content: center; }
+.give-side .notice { margin-bottom: 0; }
+
+.notice {
+  background: #141A20; border: 1px solid var(--line); border-left: 3px solid var(--info);
+  border-radius: var(--r-1); padding: 7px 10px; font-size: 12px; white-space: pre-wrap;
+}
+.notice.warn { border-left-color: var(--warn); background: #221C12; }
+.notice.bad { border-left-color: var(--danger); background: #221618; }
+.notice.compact { padding: 5px 9px; font-size: 11.5px; }
+.notice ul { margin: 4px 0 0; padding-left: 18px; }
+.console {
+  background: var(--c-base-0); border: 1px solid var(--line-soft); border-radius: var(--r-2);
+  padding: var(--sp-2) var(--sp-3); font-family: var(--mono); font-size: 12px; max-height: 300px; overflow: auto;
+  white-space: pre-wrap; word-break: break-all; margin: 0;
+}
+.log-body { max-height: 340px; overflow: auto; font-size: 12px; }
+.log-line { display: flex; gap: var(--sp-2); padding: 2px 0; border-bottom: 1px dashed var(--line-soft); }
+.log-line .t { color: var(--muted); font-family: var(--mono); flex: 0 0 62px; }
+.log-line.ok .m { color: var(--c-ok); }
+.log-line.error .m { color: #FF8A7E; }
+.log-line.warn .m { color: var(--warn); }
+.log-line.gm .m { color: var(--info); }
+
+/* ---------- 卡片 / 提示 ---------- */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--sp-3); margin-bottom: var(--sp-3); }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px var(--sp-3); }
+.card .k { color: var(--muted); font-size: 11.5px; margin-bottom: 4px; }
+.card .v { font-size: 13px; word-break: break-all; }
+.card .v.mono { font-family: var(--mono); font-size: 12px; }
+
+/* ---- 总览页：一屏看完（2026-09-22 用户要求：不用在总览里滚动） ----
+   做法是"压缩 + 分区收口"，不是简单缩小字号：
+   ①状态从 12 张大卡片换成 2 行紧凑状态条（长路径省略号 + title 悬浮看全）；
+   ②当前角色改 2 列紧凑键值网格，操作记录框内滚动；
+   ③复制 / 删除并排一行；④离线写库的规矩收进 <details>，默认只占一行。
+   高度预算（1280×720 窗口，内容区约 600px）：标题 40 + 状态条 66 + 倍率 78 + 角色/记录 180
+   + 复制/删除 118 + 规矩 38 + 间距 50 ≈ 570。 */
+.page[data-page="overview"].active { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+.page[data-page="overview"] h2 {
+  flex: 0 0 auto; margin: 0 0 8px; padding: 0 0 6px; font-size: 14px; font-weight: 700;
+}
+.ov-sub { font-weight: 400; font-size: 11.5px; }
+.ov-body { display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+/* 一屏布局的规矩：行默认**不被压缩**（否则 flex 会把最后一行压矮、.panel 的 overflow:hidden 直接切掉内容），
+   需要吸收高度的那一行显式标 .ov-fill —— 它才是"弹性"的那一块，内部再各自滚动。 */
+.ov-body > * { flex: 0 0 auto; }
+.ov-body > .ov-fill { flex: 1 1 auto; min-height: 0; }
+.ov-body .panel { margin-bottom: 0; }
+.ov-body .panel-body { padding: 8px var(--sp-3); }
+.ov-body .grid-2 { gap: 8px; }
+.ov-row { align-items: start; }
+
+/* 状态条：一行一个「标签 + 值」，两行铺满 */
+.stat-strip {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 2px 14px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 8px var(--sp-3);
+}
+.stat { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
+.stat .k { flex: 0 0 auto; color: var(--muted); font-size: 11.5px; }
+.stat .v {
+  flex: 1 1 auto; min-width: 0; font-size: 12.5px; font-weight: 600;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.stat .v.mono { font-family: var(--mono); font-size: 12px; font-weight: 500; }
+
+/* 当前角色：2 列紧凑键值（长字段用 .wide 跨两列） */
+.kv { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px 14px; margin: 0; }
+.kv .kv-item { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
+.kv .kv-item.wide { grid-column: 1 / -1; }
+.kv .k { flex: 0 0 auto; color: var(--muted); font-size: 11.5px; }
+.kv .v { min-width: 0; font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kv .v.mono { font-family: var(--mono); font-size: 12px; }
+.ov-log { max-height: 152px; }
+.ov-note { margin: 6px 0 0; font-size: 11.5px; line-height: 1.45; }
+.hint-inline { font-size: 11.5px; }
+
+/* 离线写库的规矩：默认收起，只占一行 */
+.ov-rules > summary {
+  display: flex; align-items: center; gap: var(--sp-2); cursor: pointer;
+  padding: 8px var(--sp-3); background: var(--panel-2); font-weight: 600; font-size: 12.5px;
+  list-style: none;
+}
+.ov-rules > summary::-webkit-details-marker { display: none; }
+.ov-rules > summary::before { content: "▸"; color: var(--muted); font-size: 11px; }
+.ov-rules[open] > summary::before { content: "▾"; }
+.ov-rules > summary:hover { background: var(--c-base-5); }
+.ov-rules > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+@media (max-width: 1180px) {
+  .kv { grid-template-columns: minmax(0, 1fr); }
+  .stat-strip { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+}
+
+/* ---- 角色与货币页：同样一屏看完（2026-09-22 用户要求：「角色和货币页，也可以使用一页式搞定」）----
+   手法与总览一致：①标题收成一行；②数值区 6 个字段挤成一行（.form-grid.dense）+ 经验条改成同行内联；
+   ③「一键紫装」与「角色详情」并排成中间那一行，这一行用 flex 吸收多余高度、两边各自内部滚动；
+   ④转职与成长压成一行工具栏（说明挪进 title）。
+   实测 1280×720：`.content` 无滚动。 */
+.page[data-page="character"].active { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+.page[data-page="character"] h2 { flex: 0 0 auto; margin: 0 0 8px; padding: 0 0 6px; font-size: 14px; font-weight: 700; }
+.form-grid.dense { grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: 4px 10px; }
+.form-grid.dense label { gap: 2px; }
+.form-grid.dense .hint { font-size: 10.5px; line-height: 1.3; }
+.form-grid .hint-inline { grid-column: 1 / -1; font-size: 11px; }
+/* 经验条与数字说明同一行（原来竖着两行） */
+.page[data-page="character"] .exp-meter { flex-direction: row; align-items: center; gap: var(--sp-3); }
+.page[data-page="character"] .exp-bar { flex: 1 1 auto; min-width: 120px; }
+.page[data-page="character"] .exp-facts { flex: 0 0 auto; gap: var(--sp-2); }
+/* 中间那一行：吸收剩余高度，面板内部滚动 */
+.ov-fill { align-items: stretch; }
+.ov-scroll-panel { display: flex; flex-direction: column; min-height: 0; }
+.ov-scroll-panel > .panel-head { flex: 0 0 auto; }
+.ov-scroll { flex: 1 1 auto; min-height: 0; overflow: auto; }
+.page[data-page="character"] .table-wrap.short { max-height: 132px; margin-top: 6px; }
+.page[data-page="character"] #careerSummary { max-height: 64px; overflow: auto; }
+
+.toast-host { position: fixed; right: var(--sp-4); bottom: 44px; display: flex; flex-direction: column; gap: var(--sp-2); z-index: 60; }
+.toast {
+  background: var(--panel-2); border: 1px solid var(--line); border-left: 3px solid var(--info);
+  border-radius: var(--r-1); padding: 9px var(--sp-3); max-width: 460px;
+  font-size: 12.5px; white-space: pre-wrap; word-break: break-all;
+}
+.toast.ok { border-left-color: var(--ok); }
+.toast.error { border-left-color: var(--danger); }
+
+.hover-card {
+  position: fixed; z-index: 70; display: none; pointer-events: none;
+  background: var(--c-base-4); border: 1px solid var(--line); border-radius: var(--r-2);
+  padding: 10px var(--sp-3); max-width: 380px; font-size: 12px;
+  max-height: 78vh; overflow-y: auto;
+}
+.hover-card.show { display: block; }
+.hover-head { display: flex; gap: var(--sp-2); align-items: flex-start; }
+.hover-name { font-weight: 600; margin-bottom: 2px; word-break: break-all; }
+.hover-meta { color: var(--muted); }
+
+/* ---------- 物品详情段落（游戏原生 Tooltip 结构，2026-09-21 三轮） ----------
+   属性（浅白）→ 特效（绿）→ 套装（金）→ 介绍（灰）→ 风味（斜体） */
+.tt-section { margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--line-soft); }
+.hover-head + .tt-section, .give-head + .tt-section, .give-scroll .tt-section:first-child,
+.give-sub + .tt-section { border-top: 0; margin-top: 0; padding-top: 0; }
+.tt-stat { color: #DBE7F5; line-height: 1.65; }
+.tt-effect { color: var(--ok); line-height: 1.65; }
+.tt-set { color: var(--accent); font-weight: 600; }
+.tt-desc { color: #B6C4D6; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
+.tt-desc.detail { font-size: 11.5px; }
+.tt-flavor { color: #9FB0C4; font-style: italic; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
+/* 设计图纸（六轮）：游戏设计图的"需要材料"清单样式 */
+.tt-recipe-title { color: var(--info); font-weight: 600; margin-bottom: 3px; }
+.tt-recipe-material { color: #CFDCEA; line-height: 1.6; padding-left: 12px; }
+.tt-recipe-product { color: var(--accent); margin-top: 4px; font-weight: 600; }
+.tt-tech { margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--line-soft); }
+
+.tech-details { margin-top: 6px; border-top: 1px dashed var(--line-soft); padding-top: 6px; flex: 0 0 auto; }
+.tech-details summary {
+  cursor: pointer; font-size: 11.5px; color: var(--muted); user-select: none;
+  list-style: none; display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 8px; border-radius: var(--r-1);
+  background: var(--panel-2); border: 1px solid var(--line-soft);
+  transition: color var(--dur), border-color var(--dur);
+}
+.tech-details summary:hover { color: var(--accent); border-color: var(--accent); }
+.tech-details[open] summary { margin-bottom: 6px; }
+.tech-details summary::-webkit-details-marker { display: none; }
+
+/* ---------- 发放面板里的套装区块（紧凑 2 列，全可见不滚动） ---------- */
+.set-block {
+  border: 1px solid var(--line); border-radius: var(--r-2);
+  background: var(--panel-2); padding: 6px; flex: 0 0 auto;
+}
+.set-block-head { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; margin-bottom: 4px; }
+.set-block-title { font-weight: 600; font-size: 12.5px; }
+.set-members { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px; }
+.set-member {
+  display: flex; align-items: center; gap: 4px; min-width: 0;
+  background: var(--c-base-3); border: 1px solid var(--line-soft); border-radius: var(--r-1);
+  padding: 0 4px;
+}
+.set-member .icon-box { width: 18px; height: 18px; flex-basis: 18px; border: 0; background: transparent; }
+.set-member .icon-box img { width: 18px; height: 18px; }
+.set-member-name { font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.set-member.bad { border-color: rgba(232, 85, 95, .55); }
+/* 已有（查漏补缺会跳过）的那几件：压暗一点，一眼看出不用发 */
+.set-member.owned { opacity: .62; border-style: dashed; }
+.set-member .tag { flex: 0 0 auto; padding: 0 4px; font-size: 10.5px; }
+
+/* 顶栏的账号徽标（只看本账号） */
+.account-chip {
+  align-self: center; font-size: 11.5px; padding: 2px 8px; border-radius: 999px;
+  border: 1px solid var(--line); color: var(--muted); background: var(--panel-2);
+  max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.account-chip.ok { border-color: rgba(89, 217, 245, .38); color: var(--accent); }
+.account-chip.warn { border-color: rgba(232, 85, 95, .45); color: var(--c-danger-hi); }
+.account-chip:empty { display: none; }
+.set-bonus { margin-top: 4px; }
+.set-bonus summary { cursor: pointer; font-size: 11.5px; color: var(--muted); user-select: none; }
+.set-bonus summary:hover { color: var(--accent); }
+.set-bonus-body {
+  margin-top: 4px; white-space: pre-wrap; font-size: 11.5px; line-height: 1.5; color: #B6C4D6;
+  max-height: 108px; overflow-y: auto;
+  background: var(--c-base-3); border: 1px solid var(--line-soft); border-radius: var(--r-1); padding: 6px 8px;
+}
+/* 强化 + 品级 + 两个发放整套按钮固定同一行（省下的高度留给物品详情；品级 2026-09-30 加入） */
+.set-give { display: grid; grid-template-columns: auto auto minmax(0, 1fr) minmax(0, 1fr); gap: 6px; align-items: center; margin-top: 6px; }
+.set-give .btn { justify-content: center; padding: 5px 10px; }
+.set-give .inline-field { white-space: nowrap; }
+.set-give .inline-field select { padding: 4px 6px; font-size: 12px; }
+
+/* ---------- 角色页：经验条 ---------- */
+.exp-meter { display: flex; flex-direction: column; gap: 5px; grid-column: 1 / -1; }
+.exp-bar { height: 7px; border-radius: 999px; background: var(--c-base-0); border: 1px solid var(--line-soft); overflow: hidden; }
+.exp-bar > span { display: block; height: 100%; background: var(--accent); }
+.exp-bar.over > span { background: var(--danger); }
+.exp-facts { display: flex; gap: var(--sp-3); flex-wrap: wrap; font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+
+/* ---------- 经验倍率 ---------- */
+.rate-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 999px; font-family: var(--mono); font-size: 13px; font-weight: 600;
+  background: var(--c-base-0); border: 1px solid var(--line); color: var(--muted);
+}
+.rate-badge.ok { color: var(--accent); border-color: rgba(145, 209, 213, .45); background: rgba(145, 209, 213, .12); }
+.rate-badge.bad { color: var(--c-danger-hi); border-color: rgba(232, 85, 95, .55); }
+
+/* ---------- 细节打磨 ---------- */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--c-line); border-radius: 5px; border: 2px solid var(--bg); }
+::-webkit-scrollbar-thumb:hover { background: #39424B; }
+
+.statusbar {
+  flex: 0 0 auto; display: flex; justify-content: space-between; gap: var(--sp-3);
+  padding: 5px var(--sp-4); background: var(--c-base-0); border-top: 1px solid var(--line);
+  font-size: 12px; color: var(--muted);
+}
+.statusbar-right { font-family: var(--mono); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
+
+
+/* ---------- S1A5 独有（60US 基准里没有的规则，替换后补回） ---------- */
+/* inline-field 里的数字输入框通用宽度：60US 只在 .toolbar 里收紧过，这里补一条通用的 */
+.inline-field input[type=number] { width: 96px; }
+/* 后端日志的 info 级（60US 用 gm 级；我们后端发的是 info） */
+.log-line.info .m { color: var(--info); }

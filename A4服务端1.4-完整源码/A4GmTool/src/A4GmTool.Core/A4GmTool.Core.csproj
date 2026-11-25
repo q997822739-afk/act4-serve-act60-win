@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <!-- 网页 GM 与服务端控制台共用 .NET Framework 4.8；原生 SQLite 保持 x86。 -->
+    <ProjectGuid>{C4A1B201-7D11-4E50-A102-112233445501}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>A4GmTool.Core</RootNamespace>
+    <AssemblyName>A4GmTool.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\vendor\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Utils\ByteReader.cs" />
+    <Compile Include="Data\Sqlite.cs" />
+    <Compile Include="Data\BlobCodec.cs" />
+    <Compile Include="Data\InvenItem.cs" />
+    <Compile Include="Data\SkillSlots.cs" />
+    
+    <Compile Include="Pvf\PvfArchive.cs" />
+    <Compile Include="Pvf\PvfCrypto.cs" />
+    <Compile Include="Pvf\ScriptParser.cs" />
+    <Compile Include="Pvf\StringTable.cs" />
+    
+    <Compile Include="Pvf\GameScripts.cs" />
+    <Compile Include="Pvf\QuestTable.cs" />
+    <Compile Include="Pvf\SkillTable.cs" />
+    <Compile Include="Img\NpkArchive.cs" />
+    
+    <Compile Include="Img\ImagePackLibrary.cs" />
+    <Compile Include="Services\GmEnv.cs" />
+    <Compile Include="Services\Catalog.cs" />
+    <Compile Include="Services\Offline.cs" />
+    <Compile Include="Services\Online.cs" />
+    <Compile Include="Services\GmApiRouter.cs" />
+    <Compile Include="Services\Loadout.cs" />
+    <Compile Include="Web\GmHttpServer.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

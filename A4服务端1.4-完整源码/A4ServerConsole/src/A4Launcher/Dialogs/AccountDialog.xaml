@@ -1,0 +1,81 @@
+<Window x:Class="A4Launcher.Dialogs.AccountDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:A4Launcher.Controls"
+        Title="注册帐号" Width="320" SizeToContent="Height"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize" UseLayoutRounding="True"
+        TextOptions.TextFormattingMode="Display"
+        FontFamily="SimSun">
+    <!-- 整个窗口都是原版素材拼的（样式在 App.xaml）：
+         外框 = bg_login 登录面板的金边，标题 = bg_servers「第一步」那条红带，
+         输入框 = 登录面板的黑格子，标签 = 「QQ号码」的金色粗宋体，按钮 = 89×22 牌子，关闭 = 原版 X -->
+    <ContentControl Style="{StaticResource ArtFrame}">
+        <StackPanel>
+            <!-- 标题条：没有系统标题栏，拖这条移动窗口 -->
+            <Grid Height="25" ClipToBounds="True" Background="Transparent"
+                  MouseLeftButtonDown="Header_MouseLeftButtonDown">
+                <Image Source="../Assets/title_strip.png" Stretch="None" HorizontalAlignment="Left"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                <TextBlock x:Name="TitleText" Text="注册帐号" Margin="12,0,0,0" FontSize="14" FontWeight="Bold"
+                           Foreground="{StaticResource StripText}" VerticalAlignment="Center" />
+                <controls:ImageButton x:Name="CloseButton" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                      Margin="0,0,4,0" Width="21" Height="20"
+                                      NormalImage="../Assets/close_a.png" HoverImage="../Assets/close_b.png"
+                                      PressedImage="../Assets/close_c.png" Click="Close_Click" ToolTip="关闭" />
+            </Grid>
+
+            <!-- 行距 23 = 原版登录面板两行黑格子的间距（347 → 370） -->
+            <Grid Margin="14,10,14,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="68" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="23" />
+                    <RowDefinition Height="23" />
+                    <RowDefinition x:Name="NewRow" Height="0" />
+                    <RowDefinition x:Name="CdkeyRow" Height="23" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="帐　号" Style="{StaticResource ArtLabel}" />
+                <TextBox x:Name="AccountBox" Grid.Row="0" Grid.Column="1" MaxLength="10"
+                         Style="{StaticResource SlotTextBox}" ToolTip="1~10 位字母、数字、下划线" />
+
+                <TextBlock x:Name="OldLabel" Grid.Row="1" Text="密　码" Style="{StaticResource ArtLabel}" />
+                <PasswordBox x:Name="OldBox" Grid.Row="1" Grid.Column="1" MaxLength="16"
+                             Style="{StaticResource SlotPasswordBox}" />
+
+                <TextBlock x:Name="NewLabel" Grid.Row="2" Text="新密码" Style="{StaticResource ArtLabel}" />
+                <PasswordBox x:Name="NewBox" Grid.Row="2" Grid.Column="1" MaxLength="16"
+                             Style="{StaticResource SlotPasswordBox}" />
+
+                <TextBlock x:Name="CdkeyLabel" Grid.Row="3" Text="邀请码" Style="{StaticResource ArtLabel}" />
+                <TextBox x:Name="CdkeyBox" Grid.Row="3" Grid.Column="1" MaxLength="64"
+                         Style="{StaticResource SlotTextBox}" ToolTip="没有可以不填" />
+            </Grid>
+
+            <!-- 提示 / 出错：平时是一句米色说明，出错换成红字 -->
+            <TextBlock x:Name="StatusText" Margin="16,6,14,0" MinHeight="14" TextWrapping="Wrap"
+                       Style="{StaticResource ArtNote}" />
+
+            <Grid Margin="14,8,14,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="6" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <!-- 注册 / 改密在同一个窗口里切换 -->
+                <TextBlock x:Name="SwitchLink" Grid.Column="0" Text="已有帐号？改密" Style="{StaticResource ArtNote}"
+                           Cursor="Hand" VerticalAlignment="Center" TextDecorations="Underline"
+                           MouseLeftButtonUp="SwitchMode_Click" />
+                <Button x:Name="OkButton" Grid.Column="1" Content="确　定" Style="{StaticResource PlateButton}"
+                        IsDefault="True" Click="OkButton_Click" />
+                <Button Grid.Column="3" Content="取　消" Style="{StaticResource PlateButton}"
+                        IsCancel="True" Click="Close_Click" />
+            </Grid>
+        </StackPanel>
+    </ContentControl>
+</Window>

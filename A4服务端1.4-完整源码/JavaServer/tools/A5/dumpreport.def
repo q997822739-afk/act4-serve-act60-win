@@ -1,0 +1,15 @@
+; DumpReport.dll 的导出表。名字大小写和序号与客户端原库完全一致
+; （原库 20480 字节，导出表 @1 ImplicitExceptionHandler / @2 InitStackTraceLibrary
+;   / @3 RegisterExceptionCallback —— 和 60 版客户端那份逐字节相同）。
+;
+; 用 .def 而不是 __declspec(dllexport)，是为了让导出名精确是这三个字符串 ——
+; x86 上 extern "C" __cdecl 的装饰规则会不会带前导下划线，不该由编译器版本决定。
+;
+; DNF.exe 实际只导入后两个，ImplicitExceptionHandler 保留只为让导出表和原库一致。
+
+LIBRARY DumpReport
+
+EXPORTS
+    ImplicitExceptionHandler    @1
+    InitStackTraceLibrary       @2
+    RegisterExceptionCallback   @3

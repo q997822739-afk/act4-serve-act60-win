@@ -1,0 +1,142 @@
+package com.dylan.store;
+
+final class CharacterSchema {
+
+    private CharacterSchema() {
+    }
+
+    static final String[] INDEXES = {
+            "CREATE UNIQUE INDEX IF NOT EXISTS charac_info_charac_name ON charac_info (charac_name)",
+            "CREATE INDEX IF NOT EXISTS charac_info_idx1 ON charac_info (m_id)",
+            "CREATE INDEX IF NOT EXISTS charac_info_idx2 ON charac_info (exp)",
+            "CREATE INDEX IF NOT EXISTS charac_info_idx_guild_id ON charac_info (guild_id)",
+            "CREATE INDEX IF NOT EXISTS charac_stat_idx_exp ON charac_stat (exp)",
+    };
+
+    static final String[] TABLES = {
+            """
+            CREATE TABLE IF NOT EXISTS charac_info (
+              m_id                  INT               NOT NULL DEFAULT 0,
+              charac_no             INTEGER           NOT NULL PRIMARY KEY AUTOINCREMENT,
+              charac_name           VARCHAR(20)       NOT NULL DEFAULT '',
+              village               TINYINT           NOT NULL DEFAULT 1,
+              job                   TINYINT           NOT NULL DEFAULT 0,
+              lev                   TINYINT           NOT NULL DEFAULT 1,
+              exp                   INT               NOT NULL DEFAULT 0,
+              grow_type             TINYINT           NOT NULL DEFAULT 0,
+              HP                    TINYINT UNSIGNED  NOT NULL DEFAULT 0,
+              maxHP                 SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+              maxMP                 SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+              phy_attack            SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+              phy_defense           SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+              mag_attack            SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+              mag_defense           SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+              element_resist        TINYBLOB          NOT NULL,
+              spec_property         TINYBLOB          NOT NULL,
+              inven_weight          INT               NOT NULL DEFAULT 0,
+              hp_regen              SMALLINT          NOT NULL DEFAULT 0,
+              mp_regen              SMALLINT          NOT NULL DEFAULT 0,
+              move_speed            SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+              attack_speed          SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+              cast_speed            SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+              hit_recovery          SMALLINT          NOT NULL DEFAULT 0,
+              jump                  SMALLINT          NOT NULL DEFAULT 0,
+              charac_weight         INT               NOT NULL DEFAULT 0,
+              fatigue               SMALLINT          NOT NULL DEFAULT 0,
+              max_fatigue           SMALLINT          NOT NULL DEFAULT 70,
+              premium_fatigue       SMALLINT          NOT NULL DEFAULT 0,
+              max_premium_fatigue   SMALLINT          NOT NULL DEFAULT 0,
+              create_time           DATETIME          NOT NULL DEFAULT '1970-01-01 00:00:00',
+              last_play_time        DATETIME          NOT NULL DEFAULT '1970-01-01 00:00:00',
+              dungeon_clear_point   INT               NOT NULL DEFAULT 0,
+              delete_time           DATETIME          NOT NULL DEFAULT '1970-01-01 00:00:00',
+              delete_flag           TINYINT           NOT NULL DEFAULT 0,
+              guild_id              INT UNSIGNED      NOT NULL DEFAULT 0,
+              guild_right           TINYINT           NOT NULL DEFAULT 0,
+              member_flag           TINYINT           NOT NULL DEFAULT 0,
+              sex                   TINYINT           NOT NULL DEFAULT 1,
+              expert_job            TINYINT UNSIGNED  NOT NULL DEFAULT 0,
+              skill_tree_index      TINYINT           NOT NULL DEFAULT -1,
+              link_charac_no        INT UNSIGNED      NOT NULL DEFAULT 0,
+              event_charac_level    TINYINT           NOT NULL DEFAULT 0,
+              guild_secede          TINYINT           NOT NULL DEFAULT 0,
+              start_time            INT               NOT NULL DEFAULT 0,
+              finish_time           INT               NOT NULL DEFAULT 0,
+              competition_area      TINYINT           NOT NULL DEFAULT -1,
+              competition_period    TINYINT           NOT NULL DEFAULT -1,
+              mercenary_start_time  INT               NOT NULL DEFAULT 0,
+              mercenary_finish_time INT               NOT NULL DEFAULT 0,
+              mercenary_area        TINYINT           NOT NULL DEFAULT -1,
+              mercenary_period      TINYINT           NOT NULL DEFAULT -1
+            )
+            """,
+
+            """
+            CREATE TABLE IF NOT EXISTS charac_stat (
+              charac_no                       INT               NOT NULL DEFAULT 0,
+              village                         TINYINT           NOT NULL DEFAULT 1,
+              exp                             INT               NOT NULL DEFAULT 0,
+              HP                              TINYINT UNSIGNED  NOT NULL DEFAULT 100,
+              fatigue                         SMALLINT          NOT NULL DEFAULT 0,
+              used_fatigue                    SMALLINT          NOT NULL DEFAULT 0,
+              premium_fatigue                 SMALLINT          NOT NULL DEFAULT 0,
+              dungeon_clear_point             INT               NOT NULL DEFAULT 0,
+              last_play_time                  DATETIME          NOT NULL DEFAULT '1970-01-01 00:00:00',
+              forbidden_to_play               CHAR(1)           NOT NULL DEFAULT '',
+              forbidden_due_to                DATETIME          NOT NULL DEFAULT '1970-01-01 00:00:00',
+              tutorial_flag                   INT               NOT NULL DEFAULT 0,
+              trade_gold_total                INT UNSIGNED      NOT NULL DEFAULT 0,
+              trade_gold_total_billion        SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+              trade_gold_daily                INT UNSIGNED      NOT NULL DEFAULT 0,
+              dungeon_map_pass_cnt            INT UNSIGNED      NOT NULL DEFAULT 0,
+              dungeon_map_help_pass_cnt       INT UNSIGNED      NOT NULL DEFAULT 0,
+              help_abuse_point                INT UNSIGNED      NOT NULL DEFAULT 0,
+              chaos_point                     INT UNSIGNED      NOT NULL DEFAULT 0,
+              chaos_exp                       INT UNSIGNED      NOT NULL DEFAULT 0,
+              chaos_mode_count                INT UNSIGNED      NOT NULL DEFAULT 0,
+              chaos_kill_count                INT UNSIGNED      NOT NULL DEFAULT 0,
+              chaos_die_count                 INT UNSIGNED      NOT NULL DEFAULT 0,
+              chaos_die_time                  DATETIME          NOT NULL DEFAULT '1970-01-01 00:00:00',
+              chaos_kill_time                 DATETIME          NOT NULL DEFAULT '1970-01-01 00:00:00',
+              assault_count                   INT UNSIGNED      NOT NULL DEFAULT 0,
+              luck_point                      INT               NOT NULL DEFAULT 5000,
+              dungeon_play_count              INT UNSIGNED      NOT NULL DEFAULT 0,
+              help_abuse_ratio                INT               NOT NULL DEFAULT 0,
+              help_abuse_exp                  INT               NOT NULL DEFAULT 0,
+              expert_job_exp                  INT               NOT NULL DEFAULT 0,
+              fatigue_battery_charging        INT               NOT NULL DEFAULT 0,
+              escalade_tutorial_flag          VARBINARY(16)     NOT NULL DEFAULT '',
+              power_war_point                 SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+              power_war_assault_count         INT UNSIGNED      NOT NULL DEFAULT 0,
+              power_war_assault_victory_count INT UNSIGNED      NOT NULL DEFAULT 0,
+              fatigue_grownup_buff            INT UNSIGNED      NOT NULL DEFAULT 0,
+              village_prev                    TINYINT           NOT NULL DEFAULT 1,
+              last_play_time_powerwar         DATETIME          NOT NULL DEFAULT '1970-01-01 00:00:00',
+              emotion                         SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+              add_slot_flag                   TINYINT UNSIGNED  NOT NULL DEFAULT 0,
+              member_dungeon_flag             TINYINT UNSIGNED  NOT NULL DEFAULT 0,
+              open_flag                       TINYINT           NOT NULL DEFAULT 0,
+              member_bonus_fatigue            TINYINT UNSIGNED  NOT NULL DEFAULT 0,
+              birthday_effect_time            DATETIME          DEFAULT '1970-01-01 00:00:00',
+              visible_flags                   TINYINT UNSIGNED  NOT NULL DEFAULT 2,
+              add_equipslot_flag              TINYINT           NOT NULL DEFAULT 0,
+              channel_equipslot_switch        TINYINT           NOT NULL DEFAULT 0,
+              expand_equipslot_switch         TINYINT           NOT NULL DEFAULT 0,
+              growth_power_reward             TINYINT           NOT NULL DEFAULT 0,
+              chaos_respon_time               DATETIME          NOT NULL DEFAULT '1970-01-01 00:00:00',
+              last_play_dungeon_index         INT UNSIGNED      NOT NULL DEFAULT 0,
+              total_play_time                 INT UNSIGNED      NOT NULL DEFAULT 0,
+              PRIMARY KEY (charac_no)
+            )
+            """,
+
+            """
+            CREATE TABLE IF NOT EXISTS charac_npc (
+              charac_no INT              NOT NULL DEFAULT 0,
+              npc_cnt   TINYINT UNSIGNED NOT NULL DEFAULT 0,
+              npc_data  BLOB             NOT NULL,
+              PRIMARY KEY (charac_no)
+            )
+            """,
+    };
+}

@@ -1,0 +1,27 @@
+# 编译产物
+[Bb]in/
+[Oo]bj/
+target/
+dist/
+build/
+out/
+*.class
+*.jar
+*.pdb
+*.cache
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.suo
+*.user
+*.userprefs
+*.rsuser
+
+# 运行时数据与日志
+logs/
+*.log
+data/*.db
+data/*.db-wal
+data/*.db-shm
+*.bak*
